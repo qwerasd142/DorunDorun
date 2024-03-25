@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>러닝 스팟</title>
+    <link rel="stylesheet" href="/css/runningSpot.css">
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=iiuliuld0k&submodules=geocoder"></script>
+</head>
+<body>
+<form class="saveSpot" method="post">
+    <div class="search">
+        <input id="addr1" type="button" value="선호1" onclick="spotAddr1()" th:disabled="${member.getMemberAddr1() == null || member.getMemberAddr1().equals('')}">
+        <input id="addr2" type="button" value="선호2" onclick="spotAddr2()" th:disabled="${member.getMemberAddr2() == null || member.getMemberAddr2().equals('')}">
+        <input id="addr3" type="button" value="선호3" onclick="spotAddr3()" th:disabled="${member.getMemberAddr3() == null || member.getMemberAddr3().equals('')}">
+    </div>
+</form>
+<div id="map"></div>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>주소</th>
+            <th>위도</th>
+            <th>경도</th>
+        </tr>
+        </thead>
+        <tbody id="mapList" th:each="srs:${saveRunningSpot}">
+        <td id="spotName" th:text="${srs.getSpotAddress()}"></td>
+        <td id="spotName1" th:text="${srs.getSpotName()}"></td>
+        <td id="spotx" th:text="${srs.getSpotX()}"></td>
+        <td id="spoty" th:text="${srs.getSpotY()}"></td>
+        </tbody>
+    </table>
+</div>
+<div style="display: none">
+    <table>
+        <thead>
+        <tr>
+            <th>주소</th>
+            <th>위도</th>
+            <th>경도</th>
+        </tr>
+        </thead>
+        <tbody id="mapList1">
+        <div th:disabled="${member.getMemberAddr1() == null || member.getMemberAddr1().equals('')}">
+            <td id="memberAddr1" th:text="${member.getMemberAddr1()}"></td>
+            <td id="memberx1" th:text="${member.getMemberX1()}"></td>
+            <td id="membery1" th:text="${member.getMemberY1()}"></td>
+        </div>
+        </tbody>
+        <tbody id="mapList2">
+        <div th:disabled="${member.getMemberAddr2() == null || member.getMemberAddr2().equals('')}">
+            <td id="memberAddr2" th:text="${member.getMemberAddr2()}"></td>
+            <td id="memberx2" th:text="${member.getMemberX2()}"></td>
+            <td id="membery2" th:text="${member.getMemberY2()}"></td>
+        </div>
+        </tbody>
+        <tbody id="mapList3">
+        <div th:disabled="${member.getMemberAddr3() == null || member.getMemberAddr3().equals('')}">
+            <td id="memberAddr3" th:text="${member.getMemberAddr3()}"></td>
+            <td id="memberx3" th:text="${member.getMemberX3()}"></td>
+            <td id="membery3" th:text="${member.getMemberY3()}"></td>
+        </div>
+        </tbody>
+    </table>
+</div>
+<div th:include="menuBar_place.html" class="footer"></div>
+</body>
+<script>
+    // DB에 등록된 장소 마커 표시 함수
+    // 러닝 스팟(마커)
+    var spotName = document.querySelectorAll("#spotName");
+    var spotName1 = document.querySelectorAll("#spotName1");
+    var latitudeElements = document.querySelectorAll("#mapList #spotx");
+    var longitudeElements = document.querySelectorAll("#mapList #spoty");
+
+
+    var map = new naver.maps.Map('map', {
+        // (Y좌표, X좌표)
+        center: new naver.maps.LatLng(37.3595704, 127.105399),
+        zoom: 10
+    });
+
+
+    for (var i = 0; i < latitudeElements.length; i++) {
+        var latitude = parseFloat(latitudeElements[i].innerText);
+        console.log(latitude);
+        var longitude = parseFloat(longitudeElements[i].innerText);
+        console.log(longitude);
+
+        // 마커 생성
+        var marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(longitude, latitude),
+            map: map
+        });
+
+
+        // 인포창 생성
+        var infowindow = new naver.maps.InfoWindow({
+            content: '<div class="iw_inner">' +
+                '<p>' + spotName1[i].innerHTML + '</p>'+
+                '<p>' + spotName[i].innerHTML + '</p>' +
+                '</div>',
+            maxWidth: 200,
+            backgroundColor: "#eee",
+            borderColor: "#2db400",
+            borderWidth: 5
+        });
+
+        // 이벤트 리스너를 마커와 인포창에 연결
+        (function(marker, infowindow) {
+            naver.maps.Event.addListener(marker, "mouseover", function() {
+                infowindow.open(map, marker);
+            });
+            naver.maps.Event.addListener(marker, "mouseout", function() {
+                infowindow.close();
+            });
+        })(marker, infowindow);
+    }
+
+    var currentMarker = null;
+    function spotAddr1() {
+        var y1 = document.getElementById('membery1').innerText;
+        var x1 = document.getElementById('memberx1').innerText;
+
+        map.setCenter(new naver.maps.LatLng(y1,x1));
+        map.setZoom(15);
+
+        if(currentMarker){
+            currentMarker.setMap(null);
+        }
+
+        var marker = new naver.maps.Marker({
+            map: map,
+            position: new naver.maps.LatLng(y1, x1),
+        });
+
+        currentMarker = marker;
+
+        var infowindow = new naver.maps.InfoWindow({
+            content: '<div class="iw_inner"><p>' + '현재 위치' + '</p></div>',
+            maxWidth: 200,
+            backgroundColor: "#eee",
+            borderColor: "#0e170d",
+            borderWidth: 5
+        });
+
+        (function(marker, infowindow) {
+            naver.maps.Event.addListener(marker, "mouseover", function() {
+                infowindow.open(map, marker);
+            });
+            naver.maps.Event.addListener(marker, "mouseout", function() {
+                infowindow.close();
+            });
+        })(marker, infowindow);
+
+    }
+
+    function spotAddr2() {
+        var y2 = document.getElementById('membery2').innerText;
+        console.log(y2);
+        var x2 = document.getElementById('memberx2').innerText;
+
+        map.setCenter(new naver.maps.LatLng(y2,x2));
+        map.setZoom(15);
+
+        if(currentMarker){
+            currentMarker.setMap(null);
+        }
+
+        var marker = new naver.maps.Marker({
+            map: map,
+            position: new naver.maps.LatLng(y2, x2),
+        });
+
+        currentMarker = marker;
+
+        var infowindow = new naver.maps.InfoWindow({
+            content: '<div class="iw_inner"><p>' + '현재 위치' + '</p></div>',
+            maxWidth: 200,
+            backgroundColor: "#eee",
+            borderColor: "#0e170d",
+            borderWidth: 5
+        });
+
+        (function(marker, infowindow) {
+            naver.maps.Event.addListener(marker, "mouseover", function() {
+                infowindow.open(map, marker);
+            });
+            naver.maps.Event.addListener(marker, "mouseout", function() {
+                infowindow.close();
+            });
+        })(marker, infowindow);
+
+    }
+
+    function spotAddr3() {
+        var y3 = document.getElementById('membery3').innerText;
+        var x3 = document.getElementById('memberx3').innerText;
+
+        map.setCenter(new naver.maps.LatLng(y3,x3));
+        map.setZoom(15);
+
+        if(currentMarker){
+            currentMarker.setMap(null);
+        }
+
+        var marker = new naver.maps.Marker({
+            map: map,
+            position: new naver.maps.LatLng(y3, x3),
+        });
+
+        currentMarker = marker;
+
+        var infowindow = new naver.maps.InfoWindow({
+            content: '<div class="iw_inner"><p>' + '현재 위치' + '</p></div>',
+            maxWidth: 200,
+            backgroundColor: "#eee",
+            borderColor: "#0e170d",
+            borderWidth: 5
+        });
+
+        (function(marker, infowindow) {
+            naver.maps.Event.addListener(marker, "mouseover", function() {
+                infowindow.open(map, marker);
+            });
+            naver.maps.Event.addListener(marker, "mouseout", function() {
+                infowindow.close();
+            });
+        })(marker, infowindow);
+
+    }
+
+</script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+</html>

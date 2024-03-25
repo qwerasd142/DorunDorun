@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/boardUpdate.css">
+    <title>boardUpdate</title>
+</head>
+<body>
+<form action="/board/update" method="post" name="updateForm">
+    <input type="hidden" name="boardId" th:value="${board.boardId}">
+    <div class="title">제목</div>
+    <input type="text" name="boardTitle" th:value="${board.boardTitle}"> <br>
+    <div class="title">카테고리</div>
+    <select name="boardCategory" th:value="${board.boardCategory}">
+                <option th:if="${role == 'ROLE_ADMIN'}">공지</option>
+                <option>자유</option>
+                <option>후기</option>
+            </select> <br>
+    <div class="title">내용</div>
+    <textarea name="boardContent" cols="30" rows="10" th:text="${board.boardContent}"></textarea> <br>
+    <input type="hidden" name="boardHits" th:value="${board.boardHits}">
+    <input type="submit" value="수정">
+</form>
+
+<div th:include="menuBar_home.html" class="footer"></div>
+</body>
+</html>

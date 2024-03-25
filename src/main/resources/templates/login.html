@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<div id="form">
+<img src="/img/dorundorun.png" alt="logo" id="logo">
+    <form action="/member/loginProc" method="post" onsubmit="return validateForm()">
+        <div class="id">
+            <img src="/img/id.png" alt="id">
+            <input type="text" name="username" placeholder="아이디">
+        </div>
+
+        <div class="password">
+            <img src="/img/password.png" alt="password">
+            <input type="password" name="password" placeholder="비밀번호">
+        </div>
+
+        <div class="find">
+            <button type="button" id="fineId" onclick="location.href='/member/findId'">아이디 찾기</button>
+            <button type="button" id="finePassword" onclick="location.href='/member/findPW'">비밀번호 찾기</button>
+        </div>
+            <input type="submit" id="login" value="로그인" onclick="changeColor()">
+
+    </form>
+    <a href="/member/join">
+        <div class="join">회원가입</div>
+    </a>
+</div>
+</body>
+
+</html>

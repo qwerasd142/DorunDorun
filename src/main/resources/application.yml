@@ -1,0 +1,44 @@
+server:
+  port: 8088
+  # 분 기반 세션 소멸
+  servlet:
+    session:
+      timeout: 90m
+
+# database 연동 설정
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # database의 이름
+    url : jdbc:mysql://localhost:3306/final2?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    # mysql 아이디비번
+    username : root
+    password : mysql
+  thymeleaf:
+    cache: false
+      # 채팅 추가 부분
+  profiles:
+    active: local
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: false
+    add-properties: false
+  freemarker:
+    cache: false
+  jwt:
+    secret: govlepel@$&
+  redis:
+    port: 6379
+
+
+  #spring data jpa 설정
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+

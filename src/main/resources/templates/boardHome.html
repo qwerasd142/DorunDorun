@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/boardHome.css">
+    <title>boardHome</title>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="top">
+    <p id="dorundorun">DORUN</p>
+    <p id="dorundorun2">DORUN</p>
+    <p id="community">COMMUNITY</p>
+</div>
+
+<button onclick="location.href='/board/write'" id="write">게시글 작성</button>
+
+<div class="line"></div>
+<form action="/board/home?page=1" method="get">
+    <select name="searchCondition" id="searchCondition">
+        <option th:each="entry : ${conditionMap.entrySet()}"
+                th:value="${entry.value}"
+                th:text="${entry.key}">
+        </option>
+    </select>
+    <input name="searchKeyword" type="text" id="searchKeyword" th:value="${keyword}">
+    <input type="submit" value="검색">
+</form>
+<br>
+
+<div class="menuBar">
+<button onclick="showAll()">전체</button>
+<button onclick="showNotice()">공지</button>
+<button onclick="showFreeBoard()">자유</button>
+<button onclick="showReview()">후기</button>
+</div>
+<div class="board">
+<div id="categoryTable">
+    <table>
+        <div class="boardTop">
+        <tr>
+            <th id="title">글 제목</th>
+            <th id="writer">작성자</th>
+            <!--<th>작성시간</th>-->
+            <th id="count">조회수</th>
+        </tr>
+        </div>
+        <tr th:each="board: ${boardList}" id="mmmmmm">
+            <td id="title2">
+                <a th:href="@{|/board/detail/${board.boardId}|(page=${boardList.number + 1})}">
+                    [<span id="category" th:text="${board.boardCategory}"></span>]
+                    <span id="boardTitle" th:text="${board.boardTitle}"></span>
+                </a>
+            </td>
+            <td th:text="${board.memberNickname}"></td>
+<!--
+            <td th:text="*{#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm')}"></td>
+-->
+            <td th:text="${board.boardHits}"></td>
+        </tr>
+    </table>
+    <!-- 첫번째 페이지로 이동 page=1을 소괄호 안에 작성(query-string으로 변경해주는 thymeleaf 문법) -->
+    <!-- /board/paging?page=1 -->
+    <div class="page">
+        <a class="page" th:href="@{/board/home(page=1, searchKeyword=${keyword}, searchCondition=${condition}, boardCategory=${category})}" th:if="${not #strings.isEmpty(keyword)}">&lt;&lt;</a>
+        <a class="page" th:href="@{/board/home(page=1, boardCategory=${category})}" th:if="${#strings.isEmpty(keyword)} and ${not #strings.isEmpty(category)}">&lt;&lt;</a>
+        <a class="page" th:href="@{/board/home(page=1)}" th:if="${#strings.isEmpty(keyword)} and ${#strings.isEmpty(category)}">&lt;&lt;</a>
+        <!-- boardList.getNumber() 사용자:2페이지 getNumber()=1 -->
+        <!--boardList.getNumber를 호출한 것이 boardList.number/ 아까 설정해준 page = number-->
+        <a class="page" th:href="${boardList.first} ? '#' : @{/board/home(page=${boardList.number}, searchKeyword=${keyword}, searchCondition=${condition}, boardCategory=${category})}" th:if="${not #strings.isEmpty(keyword)}">&lt;</a>
+        <a class="page" th:href="${boardList.first} ? '#' : @{/board/home(page=${boardList.number}, boardCategory=${category})}" th:if="${#strings.isEmpty(keyword)} and ${not #strings.isEmpty(category)}">&lt;</a>
+        <a class="page" th:href="${boardList.first} ? '#' : @{/board/home(page=${boardList.number})}" th:if="${#strings.isEmpty(keyword)} and ${#strings.isEmpty(category)}">&lt;</a>
+        <!-- 페이지 번호 링크(현재 페이지는 숫자만)
+                for(int page=startPage; page<=endPage; page++)-->
+        <span class="page" th:each="page: ${#numbers.sequence(startPage, endPage)}">
+            <!-- 현재페이지는 링크 없이 숫자만 -->
+            <!--그 안에서 페이지가 number 세팅 +1(number는 -1된 값이므로)이라면 page는 span처리-->
+            <span class="page" th:if="${page == boardList.number + 1}" th:text="${page}"></span>
+            <!-- 현재페이지 번호가 아닌 다른 페이지번호에는 링크를 보여줌 -->
+            <span class="page" th:if="${page != boardList.number + 1 && page !=0}">
+                    <a class="page" th:href="@{/board/home(page=${page}, searchKeyword=${keyword}, searchCondition=${condition}, boardCategory=${category})}" th:text="${page}" th:if="${not #strings.isEmpty(keyword)}"></a>
+                    <a class="page" th:href="@{/board/home(page=${page}, boardCategory=${category})}" th:if="${#strings.isEmpty(keyword)} and ${not #strings.isEmpty(category)}" th:text="${page}"></a>
+                    <a class="page" th:href="@{/board/home(page=${page})}" th:if="${#strings.isEmpty(keyword)} and ${#strings.isEmpty(category)}" th:text="${page}"></a>
+            </span>
+        </span>
+        <!--prev의 반대이며, number가 +1 해줘야 현재 페이지이므로 +2로 다음페이지로 넘긴다-->
+        <a class="page" th:href="${boardList.last} ? '#' : @{/board/home(page=${boardList.number + 2}, searchKeyword=${keyword}, searchCondition=${condition}, boardCategory=${category})}" th:if="${not #strings.isEmpty(keyword)}">&gt;</a>
+        <a class="page" th:href="${boardList.last} ? '#' : @{/board/home(page=${boardList.number + 2}, boardCategory=${category})}" th:if="${#strings.isEmpty(keyword)} and ${not #strings.isEmpty(category)}">&gt;</a>
+        <a class="page" th:href="${boardList.last} ? '#' : @{/board/home(page=${boardList.number + 2})}" th:if="${#strings.isEmpty(keyword)} and ${#strings.isEmpty(category)}">&gt;</a>
+        <!-- 마지막 페이지로 이동 -->
+        <a class="page" th:href="@{/board/home(page=${boardList.totalPages}, searchKeyword=${keyword}, searchCondition=${condition}, boardCategory=${category})}" th:if="${not #strings.isEmpty(keyword)}">&gt;&gt;</a>
+        <a class="page" th:href="@{/board/home(page=${boardList.totalPages}, searchKeyword=${keyword}, boardCategory=${category})}" th:if="${#strings.isEmpty(keyword)} and ${not #strings.isEmpty(category)}">&gt;&gt;</a>
+        <a class="page" th:href="@{/board/home(page=${boardList.totalPages}, searchKeyword=${keyword})}" th:if="${#strings.isEmpty(keyword)} and ${#strings.isEmpty(category)}">&gt;&gt;</a>
+    </div>
+</div>
+</div>
+<div id="firstBoardModal" style="margin-top : 200px; display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; text-align: center;">
+        <span style="float: right; font-size: 28px; font-weight: bold; cursor: pointer;" onclick="closeFirstLoginModal()">&times;</span>
+        <h2>배지 획득!</h2>
+        <img src="/img/FirstBoardWrite.png" alt="첫 게시물 작성 배지" width="300px">
+        <p>첫 게시물 작성 배지 획득!</p>
+    </div>
+</div>
+<div id="tenBoardModal" style="margin-top : 200px; display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; text-align: center;">
+        <span style="float: right; font-size: 28px; font-weight: bold; cursor: pointer;" onclick="closeFirstLoginModal()">&times;</span>
+        <h2>배지 획득!</h2>
+        <img src="/img/10BoardWrite.png" alt="10번째 게시물 작성 배지" width="300px">
+        <p>10번째 게시물 작성 배지 획득!</p>
+    </div>
+</div>
+<div id="fiftyBoardModal" style="margin-top : 200px; display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; text-align: center;">
+        <span style="float: right; font-size: 28px; font-weight: bold; cursor: pointer;" onclick="closeFirstLoginModal()">&times;</span>
+        <h2>배지 획득!</h2>
+        <img src="/img/50BoardWrite.png" alt="50번째 게시물 작성 배지" width="300px">
+        <p>50번째 게시물 작성 배지 획득!</p>
+    </div>
+</div>
+<div id="hundredBoardModal" style="margin-top : 200px; display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; text-align: center;">
+        <span style="float: right; font-size: 28px; font-weight: bold; cursor: pointer;" onclick="closeFirstLoginModal()">&times;</span>
+        <h2>배지 획득!</h2>
+        <img src="/img/100BoardWrite.png" alt="100번째 게시물 작성 배지" width="300px">
+        <p>100번째 게시물 작성 배지 획득!</p>
+    </div>
+</div>
+
+<div th:include="menuBar_home.html" class="footer"></div>
+    <script th:inline="javascript">
+        $(function (){
+            const canGetBadge = [[${canGetBadge}]];
+            console.log(canGetBadge);
+            if(canGetBadge==1){
+                $('#firstBoardModal').css('display','block');
+            }else if(canGetBadge == 2){
+                $('#tenBoardModal').css('display','block');
+            }else if(canGetBadge == 3){
+                $('#fiftyBoardModal').css('display','block');
+            }else if(canGetBadge == 4){
+                $('#hundredBoardModal').css('display','block');
+            }
+        });
+
+        function closeFirstLoginModal() {
+            $('#firstBoardModal').hide();
+            $('#tenBoardModal').hide();
+            $('#fiftyBoardModal').hide();
+            $('#hundredBoardModal').hide();
+        }
+        const showAll = () =>{
+            let query = "/board/home?";
+            let keyword = [[${keyword}]];
+            let condition = [[${condition}]];
+            if(keyword != null){
+                query += "searchKeyword=" + keyword + "&searchCondition=" + condition;
+            }
+            window.location.href = query;
+        }
+        const showNotice = ()=>{
+            let query = "/board/home?";
+            let keyword = [[${keyword}]];
+            let condition = [[${condition}]];
+            if(keyword != null){
+                query += "searchKeyword=" + keyword + "&searchCondition=" + condition + "&";
+            }
+            query += "boardCategory=공지"
+            window.location.href = query;
+        }
+        const showFreeBoard = () =>{
+            let query = "/board/home?";
+            let keyword = [[${keyword}]];
+            let condition = [[${condition}]];
+            if(keyword != null){
+                query += "searchKeyword=" + keyword + "&searchCondition=" + condition + "&";
+            }
+            query += "boardCategory=자유"
+            window.location.href = query;
+        }
+        const showReview = () =>{
+            let query = "/board/home?";
+            let keyword = [[${keyword}]];
+            let condition = [[${condition}]];
+            if(keyword != null){
+                query += "searchKeyword=" + keyword + "&searchCondition=" + condition + "&";
+            }
+            query += "boardCategory=후기"
+            window.location.href = query;
+        }
+    </script>
+<!--
+<script th:inline="javascript">
+    const showCategory = (button) =>{
+        const boardCategory = button.innerText;
+        console.log(boardCategory);
+        console.log([[${page}]]);
+        $.ajax({
+            type : "get",
+            url : "/board/category",
+            data : {
+                "boardCategory" : boardCategory,
+                "page" : [[${page}]],
+                "searchCondition" : [[${condition}]],
+                "searchKeyword" : [[${keyword}]]
+            },
+            success : function (res) {
+                let output = "<table>" +
+                    "<th>글 번호</th>" +
+                    "<th>글 제목</th>" +
+                    "<th>작성자</th>" +
+                    "<th>작성시간</th>" +
+                    "<th>조회수</th>";
+
+                // for (let [key, board] of res.boardList) {
+                // Object.entries(res.boardList).forEach(([key, board])=>{
+                // res.boardList.forEach(function (board) {
+                // res.forEach(function(board){
+                // for (let [key, board] of Object.entries(res)) {
+                res.boardList.content.forEach(function(board){
+                    output += "<tr>";
+                    output += "<td>" + board.boardId+ "</td>";
+                    output += "<td>";
+                    output += "<a href='/board/detail/"+board.boardId+"?page="+(res.boardList.number + 1 )+"'>";
+                    output += "[";
+                    output += "<span>"+board.boardCategory + "</span>";
+                    output += "]";
+                    output += "<span>"+board.boardTitle + "</span>";
+                    output += "</a>";
+                    output += "</td>";
+                    output += "<td>"+ board.memberNickname +"</td>"
+                    let date = new Date(board.boardCreatedTime);
+                    let formattedDate = date.getFullYear() +"-"+(date.getMonth()+1) +"-"+ date.getDate();
+                    output += "<td>"+ formattedDate + "</td>";
+                    output += "<td>"+ board.boardHits + "</td>";
+                    output += "<tr>";
+                });
+                output += "</table>";
+                output += "<a href='/board/category?page=1&searchKeyword"+res.keyword+"&searchCondition="+res.condition+"&boardCategory="+res.boardCategory+"'> << </a>";
+                output += "<a href='" + (res.boardList.first ? '#' : '/board/category?page=' + (res.boardList.number - 1) + '&searchKeyword=' + res.keyword + '&searchCondition=' + res.condition) + '&boardCategory=' + res.boardCategory + "'> < </a>";
+                output += "<a href='/board/category?page=" + (res.boardList.number + 1) + "&searchKeyword=" + res.keyword + "&searchCondition=" + res.condition + "&boardCategory=" + res.boardCategory + "'> > </a>";
+                output += "<a href='/board/category?page=" + res.boardList.totalPages + "&searchKeyword=" + res.keyword + "&searchCondition=" + res.condition + "&boardCategory=" + res.boardCategory + "'> >> </a>";
+
+                console.log(res.keyword);
+
+                document.getElementById('categoryTable').innerHTML = output;
+
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    }
+</script>
+-->
+
+</body>
+</html>

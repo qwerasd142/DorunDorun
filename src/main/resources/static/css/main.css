@@ -1,0 +1,169 @@
+body {
+  width: 350px;
+  padding: 40px;
+  margin: 0;
+  overflow-y: scroll;
+  font-family: "Arial", sans-serif;
+}
+
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 80px;
+}
+
+.right {
+  display: inline-flex;
+}
+
+#icon {
+  width: 100px;
+  height: 80px;
+  margin-top: -11px;
+}
+
+.map {
+  border-radius: 12px;
+  border-color: #e9b9b9;
+  padding: 15px;
+  font-weight: bold;
+  background-color: #e9b9b9;
+  margin-right: 20px;
+}
+
+#alert {
+  width: 40px;
+  height: 40px;
+  margin-left: 15px;
+}
+
+a {
+  text-decoration: none;
+  align-items: center;
+  width: 25%;
+  height: 60px;
+  color: black;
+  font-weight: bold;
+}
+
+#marathon{
+  margin-top: 50px;
+}
+
+.top a {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.top {
+  min-height: 150px;
+  margin-top: 40px;
+  height: auto;
+}
+
+.top a,
+.place {
+  display: inline;
+}
+
+.hotCrew,
+.oneTimeHot,
+.place,
+.boardPlace {
+  display: flex;
+  margin-top: 15px;
+  align-items: center;
+  text-align: center;
+  width: 373px;
+  flex-wrap: wrap;
+}
+
+.hotCrew h6,
+.oneTimeHot h6,
+.place h6 {
+  padding: 0;
+  margin: 0;
+  margin-top: 5px;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+  width: 70px;
+}
+
+.h6-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crewImage {
+  background-color: lightgray;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.title {
+  font-weight: bold;
+  color: black;
+  font-size: 18px;
+  width: 350px;
+  height: 15px;
+}
+
+.crewImage,
+.hotCrew h6,
+.oneTimeHot h6,
+.place h6 {
+  display: grid;
+  flex: 1;
+}
+
+.more {
+  font-weight: bold;
+  float: right;
+  width: auto;
+  height: 15px;
+  color: black;
+}
+
+.title,
+.more {
+  justify-content: space-between;
+}
+
+#board {
+  font-weight: bold;
+  color: black;
+  font-size: 18px;
+}
+
+.boardPlace {
+  width: 100%;
+  max-height: 200px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+}
+
+li{
+  list-style: none;
+  margin-left: -40px;
+  text-align: left;
+  padding: 3px;
+  border:0;
+  padding-left: 20px;
+}
+
+.marathon{
+  width: 100%;
+  height: 100px;
+  background-color: #ec9090;
+}

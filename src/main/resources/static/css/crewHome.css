@@ -1,0 +1,176 @@
+html{
+  width: 430px;
+}
+
+body {
+  width: 430px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  padding: 0;
+  margin: 0;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+#banner {
+  display: flex;
+  width: 100%;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+.open {
+  background-color: #e9b9b9;
+  height: 90px;
+  width: 430px;
+  align-items: center;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.open img {
+  margin-top: 20px;
+}
+
+.text h3 {
+  font-weight: bold;
+}
+
+.crewName {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.search {
+  margin-top: 30px;
+  text-align: center;
+  border: 1px solid #e9b9b9;
+  background-color: whitesmoke;
+  border-radius: 20px;
+  width: 300px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 65px;
+}
+
+#search-box {
+  border: 0;
+  background-color: rgba(2, 2, 2, 0);
+  height: 40px;
+  align-items: center;
+  margin-left: 25px;
+}
+
+#search-button {
+  border: 0;
+  background-image: url("../img/search_pink.png");
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-color: rgba(2, 2, 2, 0);
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.crewInfo{
+  margin: 0;
+  padding: 40px;
+  padding-bottom: 110px;
+}
+.crewList {
+  display: flex; /* 부모 요소를 플렉스 컨테이너로 설정 */
+  align-items: center; /* 수직 가운데 정렬 */
+  margin-bottom: 25px;
+}
+
+.img {
+  width: 80px;
+  height: 80px;
+  background-color: lightgray;
+  border-radius: 8px;
+}
+
+.img, .side{
+  display: table-cell;
+}
+
+.side {
+  max-width: 270px;
+}
+
+
+.text {
+  max-height: 70px;
+  overflow: hidden;
+  font-size: 14px;
+  width: 280px;
+  margin-left: 20px;
+  color: black;
+  margin-top: 5px;
+  margin-right: 30px;
+}
+
+.text h3 {
+  font-weight: bold;
+}
+
+.text p {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.info {
+  display: flex;
+  margin-left: 20px;
+  color: gray;
+  margin-top: 5px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.crewLocation {
+  width: 155px;
+  margin-right: 20px;
+}
+
+.introduce {
+  margin-top: 2px;
+}
+
+.name {
+  margin: 0 auto;
+  margin-bottom: 0;
+}
+
+.introduce,
+.name {
+  margin: 0;
+}
+
+.introduce {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+.footer{
+  position: fixed;
+  bottom: 10px;
+  width: 430px;
+}
+
+a{
+  text-decoration: none;
+}

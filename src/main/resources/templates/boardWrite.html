@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/boardWrite.css">
+    <title>write</title>
+</head>
+<body>
+
+<form action="/board/write" method="post" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td><input type="text" name="boardTitle"
+                       placeholder="제목을 입력하세요."></td>
+        </tr>
+        <tr>
+            <td>
+                <select name="boardCategory">
+                    <option th:if="${role == 'ROLE_ADMIN'}">공지</option>
+                    <option>자유</option>
+                    <option>후기</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <textarea name="boardContent" cols="30" rows="10"
+                          placeholder="내용을 입력하세요."></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td><!-- 숨긴 input 요소 -->
+                <input type="file" id="fileInput" name="boardFile" multiple style="display: none;">
+
+                <!-- 사용자 정의 스타일을 적용한 버튼 -->
+                <label for="fileInput" id="customFileUploadButton">파일 선택</label>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="글 작성"></td><br>
+        </tr>
+        <tr>
+            <td><input type="reset" onclick="window.location.back()" value="취소"></td>
+        </tr>
+    </table>
+</form>
+
+<div th:include="menuBar_home.html" class="footer"></div>
+</body>
+<script>
+    document.getElementById('customFileUploadButton').addEventListener('click', function() {
+        document.getElementById('fileInput').click();
+    });
+</script>
+</html>
